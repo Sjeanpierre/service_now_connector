@@ -44,6 +44,7 @@ type Incident struct {
 	       } `json:"assignment_group"`
 	Urgency string `json:"urgency"`
 	Severity string `json:"severity"`
+	LSMAssigned interface{} `json:"lsm_assigned"`
 }
 
 type IncidentParams struct {
@@ -89,7 +90,7 @@ func (i Incident) AssignedUser() User {
 			return userInfo[0]
 		}
 	}
-	var u = User{"N/A","N/A","N/A","N/A","N/A","N/A","N/A","N/A","N/A"}
+	var u = User{"N/A","N/A","N/A","N/A","N/A","N/A","N/A","N/A","N/A","N/A"}
 	return u
 }
 
@@ -106,5 +107,8 @@ func (d returnData) IncidentsData() (res IncidentResult){
 		log.Fatal("Could not unmarshall Incident response to struct",err)
 	}
 	res.count = len(res.Incidents)
+	for index,incident := range res.Incidents {
+		res.Incidents[index].LSMAssigned = incident.AssignedUser()
+	}
         return
 }
