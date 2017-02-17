@@ -14,7 +14,7 @@ import (
 
 type IncidentResult struct {
 	Incidents []Incident `json:"result"`
-	count int
+	Count     int `json:"incident_count"`
 }
 
 type Incident struct {
@@ -95,7 +95,7 @@ func (i Incident) AssignedUser() User {
 }
 
 func (ir IncidentResult) DataPresent() bool {
-	if ir.count > 0 {
+	if ir.Count > 0 {
 		return true
 	}
 	return false
@@ -106,7 +106,7 @@ func (d returnData) IncidentsData() (res IncidentResult){
 	if err != nil {
 		log.Fatal("Could not unmarshall Incident response to struct",err)
 	}
-	res.count = len(res.Incidents)
+	res.Count = len(res.Incidents)
 	for index,incident := range res.Incidents {
 		res.Incidents[index].LSMAssigned = incident.AssignedUser()
 	}
