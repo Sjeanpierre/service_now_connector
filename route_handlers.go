@@ -33,7 +33,7 @@ func IncidentHandler(w http.ResponseWriter, r *http.Request) {
 	serviceNow = NewClient()
 	singleIncidentParams := IncidentParams{active:false, incidentID:incidentID, limit:"100"}
 	singleIncident := serviceNow.Incidents(singleIncidentParams)
-	ret := Response{Type:"response",Message:v, Data:singleIncident.Incidents}
+	ret := Response{Type:"response",Message:v, Data:singleIncident}
 	JSONResponseHandler(w, ret)
 }
 
@@ -45,12 +45,12 @@ func IncidentTeamHandler(w http.ResponseWriter, r *http.Request) {
 	teamIncidentListParams := IncidentParams{active:true, teamID: teamID, limit:"100"}
 	teamIncidentList := serviceNow.Incidents(teamIncidentListParams)
 	if vars["option"] == "count" {
-		ret := Response{Type:"response",Message:v, Data:map[string]string{"count":strconv.Itoa(teamIncidentList.count)}}
+		ret := Response{Type:"response",Message:v, Data:map[string]string{"count":strconv.Itoa(teamIncidentList.Count)}}
 		JSONResponseHandler(w, ret)
 		return
 	}
 	if vars["option"] == "list" {
-		ret := Response{Type:"response",Message:v, Data:teamIncidentList.Incidents}
+		ret := Response{Type:"response",Message:v, Data:teamIncidentList}
 		JSONResponseHandler(w, ret)
 		return
 	}
