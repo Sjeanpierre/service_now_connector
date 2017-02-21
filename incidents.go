@@ -6,12 +6,6 @@ import (
 )
 
 
-
-
-//list incidents belonging to team
-//List incidents belonging to invidual member on the team
-//Retrieve incident by ID
-
 type IncidentResult struct {
 	Incidents []Incident `json:"result"`
 	Count     int `json:"incident_count"`
@@ -101,8 +95,8 @@ func (ir IncidentResult) DataPresent() bool {
 	return false
 }
 
-func (d returnData) IncidentsData() (res IncidentResult){
-	err := json.Unmarshal(d, &res)
+func (rd returnData) IncidentsData() (res IncidentResult){
+	err := json.Unmarshal(rd, &res)
 	if err != nil {
 		log.Fatal("Could not unmarshall Incident response to struct",err)
 	}
