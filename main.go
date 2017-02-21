@@ -22,7 +22,7 @@ func main() {
 	router := mux.NewRouter().StrictSlash(true)
 	registerHandlers(router)
 	loggedRouter := handlers.LoggingHandler(os.Stdout, router)
-	log.Fatal(http.ListenAndServe(":8080", loggedRouter))
+	log.Fatal(http.ListenAndServe(":8080", loggedRouter)) //todo, refactor to make port dynamic
 }
 
 func registerHandlers(r *mux.Router)  {

@@ -34,7 +34,7 @@ func IncidentHandler(w http.ResponseWriter, r *http.Request) {
 	singleIncidentParams := IncidentParams{active:false, incidentID:incidentID, limit:"100"}
 	singleIncident := serviceNow.Incidents(singleIncidentParams)
 	ret := Response{Type:"response",Message:v, Data:singleIncident}
-	JSONResponseHandler(w, ret)
+	JSONResponseHandler(w, ret) //todo, return 404 if incident lookup did not yield results
 }
 
 func IncidentTeamHandler(w http.ResponseWriter, r *http.Request) {
