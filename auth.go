@@ -9,6 +9,7 @@ import (
 	"log"
 	"net/url"
 	"encoding/json"
+	"crypto/tls"
 )
 
 
@@ -40,7 +41,7 @@ func (pl oauthPayload) valid() bool {
 }
 
 func (c credentials) oauthRequest(grantType string) oauthPayload {
-	client := http.Client{}
+	client := http.Client{Transport: &http.Transport{TLSClientConfig: &tls.Config{RootCAs: pool}}}
 	uri := strings.Join([]string{host, "oauth_token.do"}, "/")
 	v := url.Values{"grant_type": {grantType},
 		"client_id": {c.clientID},
@@ -55,7 +56,7 @@ func (c credentials) oauthRequest(grantType string) oauthPayload {
 	req.Header.Add("Content-Type", "application/x-www-form-urlencoded")
 	response, err := client.Do(req)
 	if err != nil {
-		log.Fatalln("An error was encountered retrieving bearer token from RS\n", err)
+		log.Fatalln("An error was encountered retrieving bearer token from Service Now\n", err)
 	}
 	if response.StatusCode != http.StatusOK {
 		log.Fatalf("A non-200 status code was returned for oauth call\n %+v", response)

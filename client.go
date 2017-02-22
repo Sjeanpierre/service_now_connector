@@ -5,6 +5,7 @@ import (
 	"strings"
 	"log"
 	"io/ioutil"
+	"crypto/tls"
 )
 
 var (
@@ -33,7 +34,11 @@ func NewClientwCreds(c credentials) client {
 
 func NewClient() client {
 	//todo, cache client
+	var c = credentials{}
 	creds := credentials{snClientID, snClientSecret, snUsername, snPassword}
+	if creds == c  {
+		log.Fatalf("Error: Environment variables for credentials are not set\n Exiting...")
+	}
 	return NewClientwCreds(creds)
 }
 
@@ -42,7 +47,7 @@ func (c getParams) buildURL(path string) string {
 }
 
 func (gp getParams) Get() returnData {
-	client := http.Client{}
+	client := http.Client{Transport: &http.Transport{TLSClientConfig: &tls.Config{RootCAs: pool}}}
 	uri := gp.buildURL(gp.path)
 	req, err := http.NewRequest("GET", uri, nil)
 
