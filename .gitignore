@@ -6,3 +6,12 @@ env.list
 env.list
 
 service_now_connector
+
+.prod_env
+
+.prod_env
+
+output.json
+
+.env
+bin
