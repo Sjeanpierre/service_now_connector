@@ -11,19 +11,23 @@ type IncidentResult struct {
 	Count     int `json:"incident_count"`
 }
 
+type SNLink struct {
+	Link string `json:"link"`
+	Value string `json:"value"`
+}
+
 type Incident struct {
 	Number string `json:"number"`
 	SysCreatedBy string `json:"sys_created_by"`
 	UIncidentType string `json:"u_incident_type"`
+	IncidentState string `json:"incident_state"`
 	Impact string `json:"impact"`
 	Active string `json:"active"`
 	Priority string `json:"priority"`
 	ShortDescription string `json:"short_description"`
+	TicketID string `json:"sys_id"`
 	ClosedBy string `json:"closed_by"`
-	AssignedTo struct {
-		       Link string `json:"link"`
-		       Value string `json:"value"`
-	       } `json:"assigned_to"`
+	AssignedToRaw json.RawMessage `json:"assigned_to,omitempty"` //todo,demote this to unexported value
 	ULsmCustomerImpacting string `json:"u_lsm_customer_impacting"`
 	UResolvedOn string `json:"u_resolved_on"`
 	UCategoryTier1 string `json:"u_category_tier_1"`
@@ -32,10 +36,7 @@ type Incident struct {
 	UCategoryTier2 string `json:"u_category_tier_2"`
 	SysCreatedOn string `json:"sys_created_on"`
 	USLA string `json:"u_sla"`
-	AssignmentGroup struct {
-		       Link string `json:"link"`
-		       Value string `json:"value"`
-	       } `json:"assignment_group"`
+	AssignmentGroup SNLink `json:"assignment_group,omitempty"`
 	Urgency string `json:"urgency"`
 	Severity string `json:"severity"`
 	LSMAssigned interface{} `json:"lsm_assigned"`
@@ -78,8 +79,15 @@ func (c client) Incidents(p IncidentParams) (IncidentResult){
 }
 
 func (i Incident) AssignedUser() User {
-	if i.AssignedTo.Value != "" {
-		userInfo := serviceNow.User(i.AssignedTo.Value)
+	if string(i.AssignedToRaw) != "" {
+		user := SNLink{}
+		err := json.Unmarshal(i.AssignedToRaw,&user)
+		if err != nil {
+			log.Printf("Could not parse Assigned to details, %+v",i.AssignedToRaw)
+			var u = User{"N/A","N/A","N/A","N/A","N/A","N/A","N/A","N/A","N/A","N/A"}
+			return u
+		}
+		userInfo := serviceNow.User(user.Value)
 		if len(userInfo) > 0 {
 			return userInfo[0]
 		}
@@ -98,7 +106,8 @@ func (ir IncidentResult) DataPresent() bool {
 func (rd returnData) IncidentsData() (res IncidentResult){
 	err := json.Unmarshal(rd, &res)
 	if err != nil {
-		log.Fatal("Could not unmarshall Incident response to struct",err)
+		log.Printf("Could not unmarshall Incident response to struct - %+v\n",err)
+		return
 	}
 	res.Count = len(res.Incidents)
 	for index,incident := range res.Incidents {
