@@ -1,4 +1,4 @@
-package main
+package snclient
 
 import (
 	//"encoding/json"
@@ -62,12 +62,12 @@ func (c credentials) oauthRequest(grantType string) oauthPayload {
 		log.Fatalf("A non-200 status code was returned for oauth call\n %+v", response)
 	}
 	defer response.Body.Close()
-	ResponseText, error := ioutil.ReadAll(response.Body)
-	if error != nil {
+	responseText, err := ioutil.ReadAll(response.Body)
+	if err != nil {
 		log.Fatalln("An error was encountered reading response data from bearer token request")
 	}
 	result := oauthPayload{}
-	err = json.Unmarshal([]byte(ResponseText), &result)
+	err = json.Unmarshal([]byte(responseText), &result)
 	if err != nil || !result.valid() {
 		log.Fatalf("Could not unmarshall response body to valid" +
 			" object for oauth request. error: %v, result: %v", err, result)
