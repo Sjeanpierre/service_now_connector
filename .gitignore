@@ -1,11 +1,11 @@
 .idea
-service_now_connector.iml
+service_now_proxy.iml
 
 env.list
 
 env.list
 
-service_now_connector
+service_now_proxy
 
 .prod_env
 
