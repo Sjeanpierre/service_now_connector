@@ -1,31 +1,12 @@
-package main
+package snapi
 
 import (
 	"net/http"
-	"encoding/json"
-	"fmt"
 	"github.com/gorilla/mux"
+	"fmt"
+	"github.com/sjeanpierre/service_now_proxy/lib/servicenow/snclient"
 	"strconv"
-	"github.com/sjeanpierre/service_now_connector/lib/servicenow/snclient"
 )
-
-type Response struct {
-	Type    string
-	Message string
-	Data    interface{}
-}
-
-func JSONResponseHandler(w http.ResponseWriter, returnval interface{}) {
-	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(returnval)
-}
-
-func notFoundHandler(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusNotFound)
-	json.NewEncoder(w).Encode(Response{Type:"error", Message:fmt.Sprintf("Route %s not found, " +
-		"please check request and try again", r.URL.Path)})
-}
 
 func IncidentHandler(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
@@ -55,5 +36,5 @@ func IncidentTeamHandler(w http.ResponseWriter, r *http.Request) {
 		JSONResponseHandler(w, ret)
 		return
 	}
-	  notFoundHandler(w,r)
+	notFoundHandler(w,r)
 }
