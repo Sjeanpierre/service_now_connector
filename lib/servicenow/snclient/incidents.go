@@ -1,10 +1,9 @@
-package main
+package snclient
 
 import (
 	"encoding/json"
 	"log"
 )
-
 
 type IncidentResult struct {
 	Incidents []Incident `json:"result"`
@@ -43,28 +42,28 @@ type Incident struct {
 }
 
 type IncidentParams struct {
-	limit string
-	active bool
-	teamID string
-	incidentID string
-	query string
+	Limit      string
+	Active     bool
+	TeamID     string
+	IncidentID string
+	Query      string
 }
 
 
-func (c client) Incidents(p IncidentParams) (IncidentResult){
+func (c Client) Incidents(p IncidentParams) (IncidentResult){
 	gp := make(map[string]string)
-	if p.teamID != "" {
-		gp["assignment_group"] = p.teamID
+	if p.TeamID != "" {
+		gp["assignment_group"] = p.TeamID
 	}
-	gp["sysparm_limit"] = p.limit
-	if p.limit != "" {
+	gp["sysparm_limit"] = p.Limit
+	if p.Limit != "" {
 		gp["sysparm_limit"] = "100"
 	}
-	if p.active {
+	if p.Active {
 		gp["sysparm_query"] = "active=true"
 	}
-	if p.incidentID != "" {
-		gp["number"] = p.incidentID
+	if p.IncidentID != "" {
+		gp["number"] = p.IncidentID
 	}
 
 	if gp["assignment_group"] == "" && gp["number"] == "" {
@@ -75,10 +74,10 @@ func (c client) Incidents(p IncidentParams) (IncidentResult){
 	IncidentRequest.params = gp
 	IncidentRequest.path = INCIDENTLISTPATH
 	IncidentRequest.Client = c
-	return IncidentRequest.Get().IncidentsData()
+	return IncidentRequest.Get().IncidentsData(c)
 }
 
-func (i Incident) AssignedUser() User {
+func (i Incident) AssignedUser(c Client) User {
 	if string(i.AssignedToRaw) != "" {
 		user := SNLink{}
 		err := json.Unmarshal(i.AssignedToRaw,&user)
@@ -87,7 +86,7 @@ func (i Incident) AssignedUser() User {
 			var u = User{"N/A","N/A","N/A","N/A","N/A","N/A","N/A","N/A","N/A","N/A"}
 			return u
 		}
-		userInfo := serviceNow.User(user.Value)
+		userInfo := c.User(user.Value)
 		if len(userInfo) > 0 {
 			return userInfo[0]
 		}
@@ -103,7 +102,7 @@ func (ir IncidentResult) DataPresent() bool {
 	return false
 }
 
-func (rd returnData) IncidentsData() (res IncidentResult){
+func (rd returnData) IncidentsData(c Client) (res IncidentResult){
 	err := json.Unmarshal(rd, &res)
 	if err != nil {
 		log.Printf("Could not unmarshall Incident response to struct - %+v\n",err)
@@ -111,7 +110,7 @@ func (rd returnData) IncidentsData() (res IncidentResult){
 	}
 	res.Count = len(res.Incidents)
 	for index,incident := range res.Incidents {
-		res.Incidents[index].LSMAssigned = incident.AssignedUser()
+		res.Incidents[index].LSMAssigned = incident.AssignedUser(c)
 	}
         return
 }

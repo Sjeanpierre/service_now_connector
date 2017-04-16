@@ -1,4 +1,4 @@
-package main
+package snclient
 
 import (
 	"net/http"
@@ -8,36 +8,32 @@ import (
 	"crypto/tls"
 )
 
-var (
-	INCIDENTLISTPATH = "api/now/v2/table/incident"
-	USERPATH = "api/now/table/sys_user"
-	USERGROUPPATH = "api/now/table/sys_user_grmember"
-)
+
 
 type returnData []byte
 
-type client struct {
+type Client struct {
 	creds oauthPayload
 }
 
 type getParams struct {
 	params map[string]string
 	path   string
-	Client client
+	Client Client
 }
 
-func NewClientwCreds(c credentials) client {
+func NewClientwCreds(c credentials) Client {
 	//todo, cache client
 	oauthCreds := c.oauthRequest("password")
-	return client{creds:oauthCreds}
+	return Client{creds:oauthCreds}
 }
 
-func NewClient() client {
+func NewClient() Client {
 	//todo, cache client
 	var c = credentials{}
 	creds := credentials{snClientID, snClientSecret, snUsername, snPassword}
 	if creds == c  {
-		log.Fatalf("Error: Environment variables for credentials are not set\n Exiting...")
+		log.Fatalln("Error: Environment variables for credentials are not set\n Exiting...")
 	}
 	return NewClientwCreds(creds)
 }

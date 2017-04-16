@@ -1,4 +1,4 @@
-package main
+package snclient
 
 var pemCerts = []byte(`
 -----BEGIN CERTIFICATE-----

@@ -1,4 +1,4 @@
-package main
+package snclient
 
 import (
 	"encoding/json"
@@ -54,7 +54,7 @@ type userParams struct {
 	groupID string
 }
 
-func (c client) User(id string) ([]User) {
+func (c Client) User(id string) ([]User) {
 	u, ok := User{}.CacheLookup(id)
 	if ok {
 		return u
@@ -83,7 +83,7 @@ func (d returnData) UsersData() (res []User) {
 	return
 }
 
-func (c client) UserGroup(id string) ([]User) {
+func (c Client) UserGroup(id string) ([]User) {
 	gp := make(map[string]string)
 	gp["sysparm_query"] = fmt.Sprintf("%s=%s", "group", id)
 	gp["sysparm_limit"] = "100"
