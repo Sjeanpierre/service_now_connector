@@ -1,6 +1,6 @@
-#!/usr/bin/env bash
+#!/usr/bin/env bash -ex
 
-GOOS=linux go build -o ./bin/linux_service_now_connector *.go
+GOOS=linux go build -o ./bin/linux_service_now_proxy *.go
 
 docker build -t service_now_api .
 
