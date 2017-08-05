@@ -35,12 +35,12 @@ type User struct {
 	SystemID       string `json:"sys_id"`
 }
 
-func (user User) CacheLookup(userID string) ([]User, bool) {
+func (user User) CacheLookup(userID string) (User, bool) {
 	u, ok := userCacheStore[userID]
 	if ok {
-		return []User{u}, true
+		return u, true
 	}
-	return []User{}, false
+	return User{}, false
 }
 
 func (user User) CacheAdd() {
@@ -54,7 +54,7 @@ type userParams struct {
 	groupID string
 }
 
-func (c Client) User(id string) ([]User) {
+func (c Client) User(id string) User {
 	u, ok := User{}.CacheLookup(id)
 	if ok {
 		return u
@@ -62,23 +62,23 @@ func (c Client) User(id string) ([]User) {
 	gp := make(map[string]string)
 	gp["sys_id"] = id
 	gp["sysparm_limit"] = "100"
-	UserRequest := getParams{}
-	UserRequest.path = USERPATH
-	UserRequest.params = gp
-	UserRequest.Client = c
+	UserRequest := getParams{path:USERPATH,params:gp,Client:c}
 	return UserRequest.Get().UsersData()
 }
 
-func (d returnData) UsersData() (res []User) {
+func (d returnData) UsersData() (res User) {
 	var r = UserResult{}
 	err := json.Unmarshal(d, &r)
 	if err != nil {
 		log.Fatal("Could not unmarshall User data response to struct", err)
 	}
-	res = r.Users
-	for _,user := range res {
+	users := r.Users
+	for _,user := range users {
 		user.CacheAdd()
 		log.Printf("Added user %s to cache", user.Email)
+	}
+	if len(users) > 0 {
+		res = users[0]
 	}
 	return
 }
@@ -95,7 +95,7 @@ func (c Client) UserGroup(id string) ([]User) {
 	var userList []User
 	for _, group := range groups.UserGroups {
 		u := c.User(group.User.ID)
-		userList = append(userList, u[0])
+		userList = append(userList, u)
 	}
 	return userList
 }

@@ -33,7 +33,7 @@ func NewClient() Client {
 	var c = credentials{}
 	creds := credentials{snClientID, snClientSecret, snUsername, snPassword}
 	if creds == c  {
-		log.Fatalln("Error: Environment variables for credentials are not set\n Exiting...")
+		log.Println("Error: Environment variables for credentials are not set\n Exiting...")
 	}
 	return NewClientwCreds(creds)
 }
@@ -48,7 +48,7 @@ func (gp getParams) Get() returnData {
 	req, err := http.NewRequest("GET", uri, nil)
 
 	if err != nil {
-		log.Fatalln("An error was encountered while building get request", err)
+		log.Println("An error was encountered while building get request", err)
 	}
 	req.Header.Add("Authorization", gp.Client.creds.bearerToken())
 	req.Header.Add("Accept", "application/json")
@@ -60,19 +60,20 @@ func (gp getParams) Get() returnData {
 	response, err := client.Do(req)
 
 	if err != nil {
-		log.Fatalln("An error was encountered while performing get request", err)
+		log.Println("An error was encountered while performing get request", err)
+		return returnData{}
 	}
 	if response.StatusCode != http.StatusOK {
-		log.Fatalf("A non-200 status code was returned for oauth call\n %+v", response)
+		log.Printf("A non-200 status code was returned for oauth call\n %+v", response)
+		return returnData{}
 	}
 	defer response.Body.Close()
 	responseBody, err := ioutil.ReadAll(response.Body)
 	if err != nil {
-		log.Fatalln("an error was encountered reading response data from request", err)
+		log.Println("an error was encountered reading response data from request", err)
+		return returnData{}
 	}
-	a := returnData{}
-	a = responseBody
-	return a
+	return responseBody
 }
 
 

@@ -15,6 +15,7 @@ var (
 	snUsername = os.Getenv("SERVICE_NOW_USERNAME")
 	snPassword = os.Getenv("SERVICE_NOW_PASSWORD")
 	pool = &x509.CertPool{}
+	noUser = User{"N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A"}
 )
 
 func init() {
