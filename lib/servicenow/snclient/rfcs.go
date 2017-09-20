@@ -12,7 +12,7 @@ type ServiceResult struct {
 }
 
 type ServiceName struct {
-	Name string `json:"value"`
+	Name string `json:"u_product_name"`
 }
 type ChangeResult struct {
 	Changes []Change `json:"result"`
@@ -20,23 +20,23 @@ type ChangeResult struct {
 }
 
 type Change struct {
-	Approval                 string `json:"approval"`
-	EndDate                  string `json:"end_date"`
-	Number                   string `json:"number"`
-	ShortDescription         string `json:"short_description"`
-	StartDate                string `json:"start_date"`
-	State                    string `json:"state"`
-	SysCreatedBy             string `json:"sys_created_by"`
-	SysCreatedOn             string `json:"sys_created_on"`
-	SysID                    string `json:"sys_id"`
-	Type                     string `json:"type"`
-	UChangeReason            string `json:"u_change_reason"`
-	Product                  string
-	ULiveServicesServiceName struct {
+	Approval         string `json:"approval"`
+	EndDate          string `json:"end_date"`
+	Number           string `json:"number"`
+	ShortDescription string `json:"short_description"`
+	StartDate        string `json:"start_date"`
+	State            string `json:"state"`
+	SysCreatedBy     string `json:"sys_created_by"`
+	SysCreatedOn     string `json:"sys_created_on"`
+	SysID            string `json:"sys_id"`
+	Type             string `json:"type"`
+	UChangeReason    string `json:"u_change_reason"`
+	Product          string
+	UProductService  struct {
 		//todo, lookup service by value
 		Link  string `json:"link"`
 		Value string `json:"value"`
-	} `json:"u_live_services_service_name"`
+	} `json:"u_product_service"`
 	URfcNumber string `json:"u_rfc_number"`
 	UStatus    string `json:"u_status"`
 }
@@ -104,7 +104,7 @@ func (rd returnData) ChangesData(c Client) (res ChangeResult) {
 	}
 	res.Count = len(res.Changes)
 	for index, change := range res.Changes {
-		res.Changes[index].Product = c.Service(change.ULiveServicesServiceName.Value)
+		res.Changes[index].Product = c.Service(change.UProductService.Value)
 	}
 	return
 }
