@@ -20,19 +20,20 @@ type ChangeResult struct {
 }
 
 type Change struct {
-	Approval         string `json:"approval"`
-	EndDate          string `json:"end_date"`
-	Number           string `json:"number"`
-	ShortDescription string `json:"short_description"`
-	StartDate        string `json:"start_date"`
-	State            string `json:"state"`
-	SysCreatedBy     string `json:"sys_created_by"`
-	SysCreatedOn     string `json:"sys_created_on"`
-	SysID            string `json:"sys_id"`
-	Type             string `json:"type"`
-	UChangeReason    string `json:"u_change_reason"`
-	Product          string
-	UProductService  struct {
+	Approval            string `json:"approval"`
+	EndDate             string `json:"end_date"`
+	Number              string `json:"number"`
+	ShortDescription    string `json:"short_description"`
+	StartDate           string `json:"start_date"`
+	State               string `json:"state"`
+	SysCreatedBy        string `json:"sys_created_by"`
+	SysCreatedOn        string `json:"sys_created_on"`
+	SysID               string `json:"sys_id"`
+	Type                string `json:"type"`
+	UChangeReason       string `json:"u_change_reason"`
+	ServiceInterruption string `json:"u_service_interruption"`
+	Product             string
+	UProductService     struct {
 		//todo, lookup service by value
 		Link  string `json:"link"`
 		Value string `json:"value"`
