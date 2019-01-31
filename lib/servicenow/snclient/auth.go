@@ -2,17 +2,15 @@ package snclient
 
 import (
 	//"encoding/json"
-	"io/ioutil"
 	"bytes"
-	"net/http"
-	"strings"
-	"log"
-	"net/url"
-	"encoding/json"
 	"crypto/tls"
+	"encoding/json"
+	"io/ioutil"
+	"log"
+	"net/http"
+	"net/url"
+	"strings"
 )
-
-
 
 type credentials struct {
 	clientID     string
@@ -26,11 +24,11 @@ type oauthPayload struct {
 	RefreshToken string `json:"refresh_token"`
 	Scope        string `json:"scope"`
 	TokenType    string `json:"token_type"`
-	Expires      int `json:"expires_in"`
+	Expires      int    `json:"expires_in"`
 }
 
-func (pl oauthPayload) bearerToken() string{
-	return strings.Join([]string{"Bearer",pl.AccessToken}," ")
+func (pl oauthPayload) bearerToken() string {
+	return strings.Join([]string{"Bearer", pl.AccessToken}, " ")
 }
 
 func (pl oauthPayload) valid() bool {
@@ -44,10 +42,10 @@ func (c credentials) oauthRequest(grantType string) oauthPayload {
 	client := http.Client{Transport: &http.Transport{TLSClientConfig: &tls.Config{RootCAs: pool}}}
 	uri := strings.Join([]string{host, "oauth_token.do"}, "/")
 	v := url.Values{"grant_type": {grantType},
-		"client_id": {c.clientID},
-		"client_secret":{c.clientSecret},
-		"username":{c.username},
-		"password":{c.password}}
+		"client_id":     {c.clientID},
+		"client_secret": {c.clientSecret},
+		"username":      {c.username},
+		"password":      {c.password}}
 	req, err := http.NewRequest("POST", uri, bytes.NewBufferString(v.Encode()))
 	if err != nil {
 		log.Fatalln("An error was encountered while building oauth token request to Service Now\n", err)
@@ -69,7 +67,7 @@ func (c credentials) oauthRequest(grantType string) oauthPayload {
 	result := oauthPayload{}
 	err = json.Unmarshal([]byte(responseText), &result)
 	if err != nil || !result.valid() {
-		log.Fatalf("Could not unmarshall response body to valid" +
+		log.Fatalf("Could not unmarshall response body to valid"+
 			" object for oauth request. error: %v, result: %v", err, result)
 	}
 	return result

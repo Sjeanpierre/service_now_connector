@@ -1,14 +1,12 @@
 package snclient
 
 import (
+	"crypto/tls"
+	"io/ioutil"
+	"log"
 	"net/http"
 	"strings"
-	"log"
-	"io/ioutil"
-	"crypto/tls"
 )
-
-
 
 type returnData []byte
 
@@ -25,14 +23,14 @@ type getParams struct {
 func NewClientwCreds(c credentials) Client {
 	//todo, cache client
 	oauthCreds := c.oauthRequest("password")
-	return Client{creds:oauthCreds}
+	return Client{creds: oauthCreds}
 }
 
 func NewClient() Client {
 	//todo, cache client
 	var c = credentials{}
 	creds := credentials{snClientID, snClientSecret, snUsername, snPassword}
-	if creds == c  {
+	if creds == c {
 		log.Println("Error: Environment variables for credentials are not set\n Exiting...")
 	}
 	return NewClientwCreds(creds)
@@ -75,5 +73,3 @@ func (gp getParams) Get() returnData {
 	}
 	return responseBody
 }
-
-

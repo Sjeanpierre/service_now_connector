@@ -2,8 +2,8 @@ package snclient
 
 import (
 	"encoding/json"
-	"log"
 	"fmt"
+	"log"
 )
 
 var userCacheStore = make(map[string]User)
@@ -18,8 +18,8 @@ type UserGroupResult struct {
 
 type UserGroup struct {
 	User struct {
-		     ID string `json:"value"`
-	     } `json:"user"`
+		ID string `json:"value"`
+	} `json:"user"`
 }
 
 type User struct {
@@ -62,7 +62,7 @@ func (c Client) User(id string) User {
 	gp := make(map[string]string)
 	gp["sys_id"] = id
 	gp["sysparm_limit"] = "100"
-	UserRequest := getParams{path:USERPATH,params:gp,Client:c}
+	UserRequest := getParams{path: USERPATH, params: gp, Client: c}
 	return UserRequest.Get().UsersData()
 }
 
@@ -73,7 +73,7 @@ func (d returnData) UsersData() (res User) {
 		log.Fatal("Could not unmarshall User data response to struct", err)
 	}
 	users := r.Users
-	for _,user := range users {
+	for _, user := range users {
 		user.CacheAdd()
 		log.Printf("Added user %s to cache", user.Email)
 	}
@@ -83,7 +83,7 @@ func (d returnData) UsersData() (res User) {
 	return
 }
 
-func (c Client) UserGroup(id string) ([]User) {
+func (c Client) UserGroup(id string) []User {
 	gp := make(map[string]string)
 	gp["sysparm_query"] = fmt.Sprintf("%s=%s", "group", id)
 	gp["sysparm_limit"] = "100"

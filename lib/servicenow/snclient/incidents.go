@@ -7,7 +7,7 @@ import (
 
 type IncidentResult struct {
 	Incidents []Incident `json:"result"`
-	Count     int `json:"incident_count"`
+	Count     int        `json:"incident_count"`
 }
 
 type SNLink struct {
@@ -16,41 +16,41 @@ type SNLink struct {
 }
 
 type Incident struct {
-	Number                string `json:"number"`
-	SysCreatedBy          string `json:"sys_created_by"`
-	UIncidentType         string `json:"u_incident_type"`
-	IncidentState         string `json:"incident_state"`
-	Impact                string `json:"impact"`
-	Active                string `json:"active"`
-	Priority              string `json:"priority"`
-	ShortDescription      string `json:"short_description"`
-	TicketID              string `json:"sys_id"`
-	ClosedBy              string `json:"closed_by"`
+	Number                string          `json:"number"`
+	SysCreatedBy          string          `json:"sys_created_by"`
+	UIncidentType         string          `json:"u_incident_type"`
+	IncidentState         string          `json:"incident_state"`
+	Impact                string          `json:"impact"`
+	Active                string          `json:"active"`
+	Priority              string          `json:"priority"`
+	ShortDescription      string          `json:"short_description"`
+	TicketID              string          `json:"sys_id"`
+	ClosedBy              string          `json:"closed_by"`
 	AssignedToRaw         json.RawMessage `json:"assigned_to,omitempty"` //todo,demote this to unexported value
-	ULsmCustomerImpacting string `json:"u_lsm_customer_impacting"`
-	UResolvedOn           string `json:"u_resolved_on"`
-	UCategoryTier1        string `json:"u_category_tier_1"`
-	SysUpdatedBy          string `json:"sys_updated_by"`
-	UCategoryTier3        string `json:"u_category_tier_3"`
-	UCategoryTier2        string `json:"u_category_tier_2"`
-	SysCreatedOn          string `json:"sys_created_on"`
-	USLA                  string `json:"u_sla"`
-	AssignmentGroup       SNLink `json:"assignment_group,omitempty"`
-	Urgency               string `json:"urgency"`
-	Severity              string `json:"severity"`
-	LSMAssigned           interface{} `json:"lsm_assigned"`
+	ULsmCustomerImpacting string          `json:"u_lsm_customer_impacting"`
+	UResolvedOn           string          `json:"u_resolved_on"`
+	UCategoryTier1        string          `json:"u_category_tier_1"`
+	SysUpdatedBy          string          `json:"sys_updated_by"`
+	UCategoryTier3        string          `json:"u_category_tier_3"`
+	UCategoryTier2        string          `json:"u_category_tier_2"`
+	SysCreatedOn          string          `json:"sys_created_on"`
+	USLA                  string          `json:"u_sla"`
+	AssignmentGroup       SNLink          `json:"assignment_group,omitempty"`
+	Urgency               string          `json:"urgency"`
+	Severity              string          `json:"severity"`
+	LSMAssigned           interface{}     `json:"lsm_assigned"`
 }
 
 type IncidentParams struct {
-	Limit      string
-	Active     bool
-	TeamID     string
-	IncidentID string
+	Limit        string
+	Active       bool
+	TeamID       string
+	IncidentID   string
 	IncidentGUID string
-	Query      string
+	Query        string
 }
 
-func (c Client) Incidents(p IncidentParams) (IncidentResult) {
+func (c Client) Incidents(p IncidentParams) IncidentResult {
 	gp := make(map[string]string)
 	if p.TeamID != "" {
 		gp["assignment_group"] = p.TeamID
@@ -73,7 +73,7 @@ func (c Client) Incidents(p IncidentParams) (IncidentResult) {
 	if gp["sys_id"] == "" && gp["assignment_group"] == "" && gp["number"] == "" {
 		log.Fatal("either teamID or incidentID must be provided")
 	}
-	IncidentRequest := getParams{params:gp,path:INCIDENTLISTPATH,Client:c}
+	IncidentRequest := getParams{params: gp, path: INCIDENTLISTPATH, Client: c}
 	return IncidentRequest.Get().IncidentsData(c)
 }
 

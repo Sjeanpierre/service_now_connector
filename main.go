@@ -1,16 +1,14 @@
 package main
 
 import (
-	"log"
-	"github.com/gorilla/mux"
 	"github.com/gorilla/handlers"
-	"net/http"
-	"github.com/sjeanpierre/service_now_proxy/lib/servicenow/snclient"
+	"github.com/gorilla/mux"
 	"github.com/sjeanpierre/service_now_proxy/lib/servicenow/snapi"
+	"github.com/sjeanpierre/service_now_proxy/lib/servicenow/snclient"
+	"log"
+	"net/http"
 	"os"
 )
-
-
 
 func main() {
 	router := mux.NewRouter().StrictSlash(true)
