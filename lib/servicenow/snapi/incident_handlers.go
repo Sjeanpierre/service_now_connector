@@ -2,7 +2,6 @@ package snapi
 
 import (
 	"fmt"
-	"log"
 	"net/http"
 	"strconv"
 
@@ -24,7 +23,6 @@ func IncidentHandler(w http.ResponseWriter, r *http.Request, isGuid bool) {
 
 	serviceNow := snclient.NewClient()
 	singleIncident := serviceNow.Incidents(singleIncidentParams)
-	log.Println("%+v", singleIncident)
 	ret := Response{Type: "response", Message: v, Data: singleIncident}
 	if singleIncident.DataPresent() {
 		JSONResponseHandler(w, ret)
@@ -42,7 +40,7 @@ func IncidentTeamHandler(w http.ResponseWriter, r *http.Request) {
 	v := fmt.Sprintf("%+v", vars)
 	teamID := vars["team"]
 	serviceNow := snclient.NewClient()
-	teamIncidentListParams := snclient.IncidentParams{Active: true, TeamID: teamID, Limit: "100"}
+	teamIncidentListParams := snclient.IncidentParams{Active: true, TeamID: teamID, Limit: "1200"}
 	teamIncidentList := serviceNow.Incidents(teamIncidentListParams)
 	if vars["option"] == "count" {
 		ret := Response{Type: "response", Message: v, Data: map[string]string{"count": strconv.Itoa(teamIncidentList.Count)}}
@@ -51,6 +49,12 @@ func IncidentTeamHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	if vars["option"] == "list" {
 		ret := Response{Type: "response", Message: v, Data: teamIncidentList}
+		JSONResponseHandler(w, ret)
+		return
+	}
+
+	if vars["option"] == "aggregate" {
+		ret := Response{Type: "response", Message: v, Data: teamIncidentList.Aggregate()}
 		JSONResponseHandler(w, ret)
 		return
 	}

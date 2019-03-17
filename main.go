@@ -17,5 +17,6 @@ func main() {
 	log.Println("Validating Service Now proxy Config")
 	snclient.NewClient() //used to check if environment variables are defined
 	log.Println("Started: Ready to serve")
+	go snclient.HydrateServiceCache()
 	log.Fatal(http.ListenAndServe(":8080", loggedRouter)) //todo, refactor to make port dynamic
 }

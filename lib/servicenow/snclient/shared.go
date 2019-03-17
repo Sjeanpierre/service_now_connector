@@ -11,6 +11,7 @@ var (
 	CHANGEPATH       = "api/now/v2/table/change_request"
 	USERGROUPPATH    = "api/now/table/sys_user_grmember"
 	SERVICENAMEPATH  = "api/now/v2/table/u_live_services_products"
+	PRODUCTNAMEPATH  = "api/now/v2/table/u_live_services_products/"
 	host             = os.Getenv("SERVICE_NOW_HOSTNAME")
 	snClientID       = os.Getenv("SERVICE_NOW_CLIENT_ID")
 	snClientSecret   = os.Getenv("SERVICE_NOW_CLIENT_SECRET")

@@ -5,15 +5,7 @@ import (
 	"log"
 )
 
-var serviceCacheStore = make(map[string]string)
 
-type ServiceResult struct {
-	Services []ServiceName `json:"result"`
-}
-
-type ServiceName struct {
-	Name string `json:"u_product_name"`
-}
 type ChangeResult struct {
 	Changes []Change `json:"result"`
 	Count   int      `json:"change_count"`
@@ -57,27 +49,6 @@ func (cr ChangeResult) DataPresent() bool {
 	return false
 }
 
-func (c Client) Service(id string) string {
-	//todo add simple caching here
-	service, ok := serviceCacheStore[id]
-	if ok {
-		return service
-	}
-	p := make(map[string]string)
-	p["sys_id"] = id
-	r := getParams{path: SERVICENAMEPATH, params: p, Client: c}
-	jsonResponse := r.Get()
-	data := ServiceResult{}
-	if err := json.Unmarshal(jsonResponse, &data); err != nil {
-		log.Printf("Could not unmarshall service name from Service now response, %s", err.Error())
-		return ""
-	}
-	service = data.Services[0].Name
-	if service != "" {
-		serviceCacheStore[id] = service
-	}
-	return service
-}
 
 func (c Client) Changes(p ChangeParams) ChangeResult {
 	gp := make(map[string]string)
